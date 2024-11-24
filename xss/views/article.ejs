@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= article.title %>
+  </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .comment {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .comment-input {
+      width: 100%;
+      padding: 8px;
+    }
+
+    button {
+      padding: 8px 12px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    <%= article.title %>
+  </h1>
+  <p>
+    <%= article.content %>
+  </p>
+
+  <h2>Komentar</h2>
+  <div id="comments">
+    <% article.comments.forEach(function(comment) { %>
+      <div class="comment">
+        <%- comment %>
+      </div>
+      <% }); %>
+  </div>
+
+  <h3>Tambah Komentar</h3>
+  <form id="commentForm" action="/api/article/comments" method="POST" onsubmit="submitComment(event)">
+    <input type="text" name="comment" id="comment-input" class="comment-input" placeholder="Tulis komentar..."
+      required />
+    <button type="submit">Kirim Komentar</button>
+  </form>
+
+  <script>
+    // Fungsi untuk mengirim komentar tanpa reload halaman
+    async function submitComment(event) {
+      event.preventDefault()
+
+      const commentInput = document.getElementById('comment-input')
+      const comment = commentInput.value
+
+      const response = await fetch('/api/article/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment })
+      })
+
+      if (response.ok) {
+        // reload
+        location.reload()
+      } else {
+        alert('Gagal menambahkan komentar.')
+      }
+    }
+  </script>
+</body>
+
+</html>
